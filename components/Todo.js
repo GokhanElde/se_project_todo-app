@@ -44,7 +44,6 @@ class Todo {
       .cloneNode(true);
 
     const todoNameEl = this._todoElement.querySelector(".todo__name");
-
     todoNameEl.textContent = this._data.name;
 
     this._generateCheckboxEl();
