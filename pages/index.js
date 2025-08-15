@@ -17,7 +17,7 @@ const generateTodo = (data) => {
 const section = new Section({
   items: initialTodos,
   renderer: (item) => {
-    const el = generateTodo(item);
+    const todoElement = generateTodo(item);
     section.addItem(el);
   },
   containerSelector: ".todos__list",
@@ -53,15 +53,15 @@ addTodoPopup.setEventListeners();
 
 addTodoButton.addEventListener("click", () => addTodoPopup.open());
 
-const todosList = document.querySelector(".todos__list");
+const todosListEl = document.querySelector(".todos__list");
 
-todosList.addEventListener("change", (e) => {
+todosListEl.addEventListener("change", (e) => {
   if (e.target.classList.contains("todo__completed")) {
     counter.updateCompleted(e.target.checked);
   }
 });
 
-todosList.addEventListener("click", (e) => {
+todosListEl.addEventListener("click", (e) => {
   const delBtn = e.target.closest(".todo__delete-btn");
   if (!delBtn) return;
   const li = delBtn.closest(".todo");

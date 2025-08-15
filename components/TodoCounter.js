@@ -6,8 +6,8 @@ class TodoCounter {
     this._updateText();
   }
 
-  updateCompleted(increment) {
-    if (increment === true) {
+  updateCompleted(isIncrement) {
+    if (isIncrement) {
       this._completed = this._completed + 1;
     } else {
       this._completed = this._completed - 1;
@@ -15,8 +15,8 @@ class TodoCounter {
     this._updateText();
   }
 
-  updateTotal(increment) {
-    if (increment === true) {
+  updateTotal(isIncrement) {
+    if (isIncrement) {
       this._total = this._total + 1;
     } else {
       this._total = this._total - 1;
