@@ -9,22 +9,32 @@ import TodoCounter from "../components/TodoCounter.js";
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoForm = document.forms["add-todo-form"];
 
+const counter = new TodoCounter(initialTodos, ".counter__text");
+
 const generateTodo = (data) => {
-  const todo = new Todo(data, "#todo-template");
+  const todo = new Todo(data, "#todo-template", {
+    onCompletedChange: (isCompleted) => {
+      counter.updateCompleted(isCompleted);
+    },
+    onDelete: (wasCompleted) => {
+      if (wasCompleted) counter.updateCompleted(false);
+      counter.updateTotal(false);
+    },
+  });
   return todo.getView();
+};
+
+const renderTodo = (item) => {
+  const todoElement = generateTodo(item);
+  section.addItem(todoElement);
 };
 
 const section = new Section({
   items: initialTodos,
-  renderer: (item) => {
-    const todoElement = generateTodo(item);
-    section.addItem(todoElement);
-  },
+  renderer: renderTodo,
   containerSelector: ".todos__list",
 });
 section.renderItems();
-
-const counter = new TodoCounter(initialTodos, ".counter__text");
 
 const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
 newTodoValidator.enableValidation();
@@ -36,15 +46,13 @@ const addTodoPopup = new PopupWithForm({
     if (date) {
       date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
     }
-
     const todoValues = {
       name: values.name,
       date,
       id: uuidv4(),
       completed: false,
     };
-
-    section.addItem(generateTodo(todoValues));
+    renderTodo(todoValues);
     counter.updateTotal(true);
     newTodoValidator.resetValidation();
   },
@@ -52,21 +60,3 @@ const addTodoPopup = new PopupWithForm({
 addTodoPopup.setEventListeners();
 
 addTodoButton.addEventListener("click", () => addTodoPopup.open());
-
-const todosListEl = document.querySelector(".todos__list");
-
-todosListEl.addEventListener("change", (e) => {
-  if (e.target.classList.contains("todo__completed")) {
-    counter.updateCompleted(e.target.checked);
-  }
-});
-
-todosListEl.addEventListener("click", (e) => {
-  const delBtn = e.target.closest(".todo__delete-btn");
-  if (!delBtn) return;
-  const li = delBtn.closest(".todo");
-  const wasCompleted = li?.querySelector(".todo__completed")?.checked;
-  if (wasCompleted) counter.updateCompleted(false);
-  li.remove();
-  counter.updateTotal(false);
-});
